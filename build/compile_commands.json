@@ -1,0 +1,92 @@
+[
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Acceptor.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Acceptor.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Acceptor.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Buffer.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Buffer.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Buffer.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Callback.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Callback.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Callback.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Channel.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Channel.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Channel.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/CurrentThread.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/CurrentThread.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/CurrentThread.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/DefaultPoller.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/DefaultPoller.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/DefaultPoller.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/EpollPoller.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/EpollPoller.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/EpollPoller.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/EventLoop.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/EventLoop.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/EventLoop.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/EventLoopThread.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/EventLoopThread.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/EventLoopThread.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/EventLoopThreadPool.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/EventLoopThreadPool.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/EventLoopThreadPool.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/InetAddress.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/InetAddress.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/InetAddress.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Logger.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Logger.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Logger.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Poller.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Poller.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Poller.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Socket.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Socket.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Socket.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/TcpConnection.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/TcpConnection.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/TcpConnection.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/TcpServer.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/TcpServer.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/TcpServer.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Thread.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Thread.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Thread.cpp"
+},
+{
+  "directory": "/home/wuyouxiaobai/Desktop/my_muduo/build",
+  "command": "/usr/bin/g++ -Dmymoduo_EXPORTS   -std=c++11 -g -fPIC -o CMakeFiles/mymoduo.dir/Timestamp.cpp.o -c /home/wuyouxiaobai/Desktop/my_muduo/Timestamp.cpp",
+  "file": "/home/wuyouxiaobai/Desktop/my_muduo/Timestamp.cpp"
+}
+]
