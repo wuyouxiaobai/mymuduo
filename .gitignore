@@ -1,1 +1,13 @@
+# 忽略 build 目录
 build
+
+# 忽略 lib 目录
+lib
+
+# 忽略 .vscode 目录
+.vscode
+
+# 忽略 example 目录下的所有文件和子目录，但排除 Makefile 和 .cc 文件
+example/*
+!example/Makefile
+!example/*.cc

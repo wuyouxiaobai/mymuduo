@@ -219,7 +219,7 @@ void TcpConnection::connectDestroyed()
     {
         setState(kDisconnected);
         channel_->disableAll();
-        ConnectionCallback(shared_from_this());
+        connectionCallback_(shared_from_this());
     }
     channel_->remove();
 }

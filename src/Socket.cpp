@@ -79,7 +79,7 @@ void Socket::setReuseAddr(bool on)
 void Socket::setKeepAlive(bool on)
 {
     int flag = on ? 1 : 0;
-    if(::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &flag, sizeof(flag)) < 0)
+    if(::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof(flag)) < 0)
     {
         LOG_ERROR("Socket::setKeepAlive failed, error: %s", strerror(errno));
     }
@@ -88,7 +88,7 @@ void Socket::setKeepAlive(bool on)
 void Socket::setReusePort(bool on)
 {
     int flag = on ? 1 : 0;
-    if(::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &flag, sizeof(flag)) < 0)
+    if(::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &flag, sizeof(flag)) < 0)
     {
         LOG_ERROR("Socket::setReusePort failed, error: %s", strerror(errno));
     }

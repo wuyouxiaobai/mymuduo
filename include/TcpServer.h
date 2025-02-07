@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <atomic>
 #include "TcpConnection.h"
+#include "Logger.h"
 
 
 namespace WYXB {

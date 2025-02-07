@@ -106,6 +106,8 @@ void EpollPoller::fillActiveChannels(int numEvents, ChannelList* activeChannels)
     for(int i = 0; i < numEvents; ++i)
     {
         Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
+        if(channel == nullptr)
+            LOG_ERROR("epoll_wait channel error");
         channel->set_revents(events_[i].events);
         activeChannels->push_back(channel);
     }
@@ -120,7 +122,7 @@ void EpollPoller::update(int operation, Channel* channel)
     event.events = channel->events();
     event.data.ptr = channel;
     int fd = channel->fd();
-    event.data.fd = fd;
+    // event.data.fd = fd;
     if(::epoll_ctl(epollFd_, operation, fd, &event) < 0)
     {
         if(operation == EPOLL_CTL_DEL)

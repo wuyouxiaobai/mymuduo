@@ -14,7 +14,10 @@ bool Poller::hasChannel(Channel* channel) const
 
 }
 
+Poller::~Poller()
+{
 
+}
 }
 
 
