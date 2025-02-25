@@ -14,5 +14,5 @@ include_directories(./include)
 aux_source_directory(./src SRC_LIST)
 
 # 生成可执行文件
-add_executable(echoservertest ${SRC_LIST})
-# add_library(mymoduo SHARED ${SRC_LIST})
+# add_executable(echoservertest ${SRC_LIST})
+add_library(mymoduo SHARED ${SRC_LIST})
