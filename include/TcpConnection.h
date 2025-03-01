@@ -73,7 +73,7 @@ private:
     const InetAddress local_addr_;
     const InetAddress peer_addr_;
 
-    ConnectionCallback connectionCallback_; // 有新连接的回调
+    ConnectionCallback connectionCallback_; // 有新连接和连接断开的回调
     MessageCallback messageCallback_; // 有数据到达的回调
     WriteCompleteCallback writeCompleteCallback_; // 消息发送完成以后的回调
     HighWaterMarkCallback highWaterMarkCallback_; // 消息积压的回调
