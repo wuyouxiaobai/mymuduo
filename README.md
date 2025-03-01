@@ -14,6 +14,8 @@ muduo
 
 ## EventLoop
 - wakeupChannel_能够用来唤醒阻塞的SubReactor
+- 一个subReactor调用另一个subreactor的quit时，会通过wakeup（）唤醒对应线程执行退出操作
+- 一个subReactor在使用另一个subreactor的runInLoop处理回调函数时，会通过queueInLoop将对应回调函数加入到另一个subreactor的loop的函数队列中，然后用wakeup（）唤醒线程执行函数队列中的所有函数。
 
 ## TcpServer
 - 管理

@@ -116,11 +116,14 @@ void EventLoop::runInLoop(Functor&& cb)
     }
     else
     {
-        queueInLoop(std::move(cb)); // 放入待执行队列
+
+        queueInLoop(std::move(cb)); 
     }
 }
 
 // 用来唤醒loop所在的线程 向wakeupfd写入数据，wakeupchannel的EPOLLIN读事件发生后，当前线程就会被唤醒
+// 一个subReactor调用另一个subreactor的quit时，会通过wakeup（）唤醒对应线程执行退出操作
+// 一个subReactor在使用另一个subreactor的runInLoop处理回调函数时，会通过queueInLoop将对应回调函数加入到另一个subreactor的loop的函数队列中，然后用wakeup（）唤醒线程执行函数队列中的所有函数。
 void EventLoop::wakeup()
 {
     uint64_t one = 1;
