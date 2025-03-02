@@ -1,4 +1,10 @@
-muduo
+## 异步写日志问题
+？？？？？？？？？？？？？？？？？？？？？？
+
+## 水位线
+highWaterMarkCallback_（消息积压的回调）
+用户使用send发送消息时，如果（oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_）即剩余未发送的数据超过了水位线，
+就会调用highWaterMarkCallback_处理，这个回调函数由用户实现并通过Tcpconnection的setHighWaterMarkCallback绑定
 
 ## 函数绑定时机Tcpconnection
 - Tcpconnection创建时绑定Channel的回调函数

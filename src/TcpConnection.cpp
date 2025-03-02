@@ -188,9 +188,7 @@ void TcpConnection::sendInLoop(const void* data, int len)
     {
         // 目前缓冲区剩余待发送数据长度
         size_t oldLen = outputBuffer_.readableBytes();
-        if(oldLen + remaining >= highWaterMark_
-            && oldLen < highWaterMark_
-            && highWaterMarkCallback_)
+        if(oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_)
         {
             loop_->queueInLoop(std::bind(highWaterMarkCallback_, shared_from_this(), oldLen + remaining));
         }
