@@ -1,44 +1,67 @@
-## 异步写日志问题
-？？？？？？？？？？？？？？？？？？？？？？
+# my_muduo 项目文档
 
-## 水位线
-highWaterMarkCallback_（消息积压的回调）
-用户使用send发送消息时，如果（oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_）即剩余未发送的数据超过了水位线，
-就会调用highWaterMarkCallback_处理，这个回调函数由用户实现并通过Tcpconnection的setHighWaterMarkCallback绑定
+## 1. 核心概念
 
-## 函数绑定时机Tcpconnection
-- Tcpconnection创建时绑定Channel的回调函数
-- handleRead回调将读事件的消息写入缓冲inputBuffer_，
-- handleWrite回调通过写事件触发，将缓冲outputBuffer_的数据发送出去
-- handleClose回调通过关闭事件触发，关闭连接
+### 1.1 异步写日志
+待补充...
 
-- Tcpconnection提供send用来向对端发送消息 --》由sendInLoop先发送，如果没有发送完成，会加入到outputBuffer_，并注册到写事件，后序交给handleWrite
-- 用户定义onConnection(const TcpConnectionPtr& conn)函数来处理连接事件
-- 用户定义onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)函数来处理outputBuffer_的消息
+### 1.2 水位线机制
+- `highWaterMarkCallback_`：消息积压回调
+  - 当用户使用 `send` 发送消息时，如果满足以下条件：
+    - 剩余未发送数据超过水位线 (`oldLen + remaining >= highWaterMark_`)
+    - 之前的数据量未超过水位线 (`oldLen < highWaterMark_`)
+    - 回调函数已设置 (`highWaterMarkCallback_`)
+  - 则会调用 `highWaterMarkCallback_` 处理积压消息
 
-- Tcpconnection通过connectEstablished建立连接，通过connectDestroyed销毁连接
+## 2. TcpConnection 详解
 
-## EventLoop
-- wakeupChannel_能够用来唤醒阻塞的SubReactor
-- 一个subReactor调用另一个subreactor的quit时，会通过wakeup（）唤醒对应线程执行退出操作
-- 一个subReactor在使用另一个subreactor的runInLoop处理回调函数时，会通过queueInLoop将对应回调函数加入到另一个subreactor的loop的函数队列中，然后用wakeup（）唤醒线程执行函数队列中的所有函数。
+### 2.1 回调函数绑定时机
+- 创建时：绑定 Channel 的回调函数
+- 读事件：`handleRead` 将数据写入 `inputBuffer_`
+- 写事件：`handleWrite` 发送 `outputBuffer_` 中的数据
+- 关闭事件：`handleClose` 关闭连接
 
-## TcpServer
-- 管理
-- loop_主Reactor
-- acceptor_
-- threadPool_ （线程池管理loops、threads）
-- start启动线程池（threadPool_）和主loop_（通过acceptor_监听并分发链接）
-- 提供setThreadInitCallback、setConnectionCallback、setMessageCallback、setWriteCompleteCallback设置Tcpconnection的对应回调
+### 2.2 主要功能
+- `send`：向对端发送消息
+  - 通过 `sendInLoop` 先尝试发送
+  - 未发送完成的数据加入 `outputBuffer_` 并注册写事件
+  - 后续由 `handleWrite` 处理
+- `connectEstablished`：建立连接
+- `connectDestroyed`：销毁连接
 
-- TcpConnection通过TcpServer的newConnection，绑定到acceptor_。newConnection通过轮询创建新连接（绑定分配的loop，创建对应的channel，绑定setThreadInitCallback、setConnectionCallback、setMessageCallback、setWriteCompleteCallback这些设置的回调函数）
-- 链接创建过程，Tcpserver--》Tcpconnnection--》Channel--》绑定EventLoop
+### 2.3 用户自定义回调
+- `onConnection(const TcpConnectionPtr& conn)`：处理连接事件
+- `onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)`：处理消息
 
-- channel调用TcpConnection绑定handleClose，进而调用Tcpserver绑定到Tcpconnection的removeConnection，然后通过runInLoop在loop中注册删除连接的回调removeConnectionInLoop然后删除连接
-- 链接销毁过程，客户端断开连接触发Channel--》TcpConnection--》Tcpserver--》依次进行TcpConnection从connections_删除（因为使用shared_ptr，所以此时如果没有channel使用这个连接，那么这个连接就释放了内存）--》Channel的析构。
-- 如果将Tcpconnection从connections_ 删除时对应的Channel还在handleEvent，那么将会通过std::shared_ptr<void> guard = tie_.lock()将Tcpconnection的生命延长到handleEvent完成。
+## 3. EventLoop 机制
 
-## muduo 使用方法
+- `wakeupChannel_`：用于唤醒阻塞的 SubReactor
+- 跨线程操作：
+  - `quit()`：通过 `wakeup()` 唤醒线程执行退出
+  - `runInLoop`：通过 `queueInLoop` 将回调加入目标线程队列，并唤醒执行
+
+## 4. TcpServer 架构
+
+### 4.1 核心组件
+- `loop_`：主 Reactor
+- `acceptor_`：监听并分发连接
+- `threadPool_`：管理线程池（loops、threads）
+
+### 4.2 主要功能
+- `start`：启动线程池和主 loop
+- 回调设置：
+  - `setThreadInitCallback`
+  - `setConnectionCallback`
+  - `setMessageCallback`
+  - `setWriteCompleteCallback`
+
+### 4.3 连接生命周期管理
+- 创建过程：`TcpServer -> TcpConnection -> Channel -> EventLoop`
+- 销毁过程：`Channel -> TcpConnection -> TcpServer`
+  - 通过 `removeConnection` 和 `removeConnectionInLoop` 安全删除连接
+  - 使用 `shared_ptr` 管理连接生命周期
+
+## 5. 使用指南
 
 ### 1. 创建 TcpServer
 首先，你需要创建一个 `TcpServer` 对象来监听指定的端口并处理客户端连接。以下是一个简单的示例：

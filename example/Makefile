@@ -1,4 +1,4 @@
 echoserver :
-	g++ echoserver.cc -o echoserver -lpthread -I ../include -L ../lib -lmymoduo
+	g++ echoserver2.cc -o echoserver2 -lpthread -I ../include -L ../lib -lmymoduo
 clean :
-	rm -f echoserver
+	rm -f echoserver2
