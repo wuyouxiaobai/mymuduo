@@ -103,3 +103,24 @@ LOG_ERROR("This is an error message");
 `muduo` 的核心是事件循环，你可以通过 `EventLoop` 类来管理事件循环。以下是一个示例：
 EventLoop loop;
 loop.loop();
+
+
+## 8. 用c++17进一步重构
+
+### 1. buffer
+1.1 string_view 代替 string
+优势：只引用，不分配内存，只读，零拷贝
+
+1.2 使用[[nodiscard]]保证返回值被使用，否则会报警告
+
+1.3 用clamp 代替 if-else 语句，现在retrieve()的取值范围
+
+c++11特性的扩充
+1.4 使用 std::vector::data() 代替 &*buffer_.begin() 
+减少迭代器的解引用
+
+1.5 constexpr声明编译期常量和编译期可计算函数
+
+1.6 用memmove代替copy，做重叠部分内存的移动
+
+1.7 使用 std::array 替换 C 风格数组

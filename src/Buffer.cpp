@@ -8,17 +8,18 @@ namespace WYXB
 // 从fd上读数据
 ssize_t Buffer::readFd(int fd, int* saveErrno)
 {
-    char extrabuf[65536] = {0}; // 64k
+    constexpr size_t extrabufSize = 65536;
+    std::array<char, extrabufSize> extrabuf{}; // 64k
     struct iovec vec[2];
 
     const size_t writable = writableBytes();
     vec[0].iov_base = begin()  + writerIndex_;
     vec[0].iov_len  = writable;
 
-    vec[1].iov_base = extrabuf;
-    vec[1].iov_len = sizeof(extrabuf);
+    vec[1].iov_base = extrabuf.data();
+    vec[1].iov_len = extrabuf.size();
 
-    const int iovcnt = (writable < sizeof(extrabuf)) ? 2 : 1;
+    const int iovcnt = (writable < extrabufSize) ? 2 : 1;
     const ssize_t n = ::readv(fd, vec, iovcnt);
     if(n < 0)
     {
@@ -31,7 +32,7 @@ ssize_t Buffer::readFd(int fd, int* saveErrno)
     else
     {
         writerIndex_ = buffer_.size();
-        append(extrabuf, n - writable);
+        append(extrabuf.data(), n - writable);
     }
     return n;
 }
@@ -39,7 +40,7 @@ ssize_t Buffer::readFd(int fd, int* saveErrno)
     // 通过fd发送数据
 ssize_t Buffer::writeFd(int fd, int* saveErrno)
 {
-    ssize_t n = ::write(fd, peek(), readableBytes());
+    ssize_t n = ::write(fd, peek().data(), readableBytes());
     if(n <= 0)
     {
         *saveErrno = errno;
