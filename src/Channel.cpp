@@ -7,9 +7,7 @@
 namespace WYXB
 {
 
-const int Channel::kNoneEvent = 0;
-const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
-const int Channel::kWriteEvent = EPOLLOUT;
+
 
 Channel::Channel(EventLoop *loop, int fd)
     : loop_(loop),
@@ -50,8 +48,7 @@ void Channel::handleEvent(Timestamp receiveTime)
 {
     if(tied_)
     {
-        std::shared_ptr<void> guard(tie_.lock());
-        if(guard)
+        if(auto guard = tie_.lock(); guard)
         {
             handleEventWithGuard(receiveTime);
         }

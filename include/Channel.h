@@ -4,6 +4,7 @@
 #include <functional>
 #include "Timestamp.h"
 #include <memory>
+#include <sys/epoll.h>
 
 namespace WYXB
 {
@@ -35,8 +36,8 @@ public:
     
     void tie(const std::shared_ptr<void>&);
 
-    int fd() const { return fd_; }
-    int events() const { return events_; }
+    [[nodiscard]] int fd() const { return fd_; }
+    [[nodiscard]] int events() const { return events_; }
     void set_revents(int revt){ revents_ = revt; }
 
     
@@ -49,16 +50,16 @@ public:
     void disableAll() {events_ = kNoneEvent; update();}
 
     // 返回fd当前事件状态
-    bool isNoneEvent() const {return events_ == kNoneEvent;}
-    bool isWriting() const {return events_ & kWriteEvent;}
-    bool isReading() const {return events_ & kReadEvent;}
+    [[nodiscard]] bool isNoneEvent() const {return events_ == kNoneEvent;}
+    [[nodiscard]] bool isWriting() const {return events_ & kWriteEvent;}
+    [[nodiscard]] bool isReading() const {return events_ & kReadEvent;}
 
-    int index() {return index_;}
+    [[nodiscard]] int index() {return index_;}
     void set_index(int idx) {index_ = idx;}
 
     // one loop per thread
     // 获得Channel所属的loop
-    EventLoop* ownerLoop() {return loop_;}
+    [[nodiscard]] EventLoop* ownerLoop() {return loop_;}
     void remove();
 
 private:
@@ -67,9 +68,9 @@ private:
     void handleEventWithGuard(Timestamp receiveTime);
     
 
-    static const int kNoneEvent;
-    static const int kReadEvent;
-    static const int kWriteEvent;
+    inline static constexpr int kNoneEvent = 0;
+    inline static constexpr int kReadEvent = EPOLLIN | EPOLLPRI;
+    inline static constexpr int kWriteEvent = EPOLLOUT;
     
     EventLoop* loop_; // 事件循环
     const int fd_; // 监听的对象
@@ -78,7 +79,7 @@ private:
     int index_; 
     
     std::weak_ptr<void> tie_;
-    bool tied_;
+    bool tied_ = false;
 
     // 通过fd对应的调用事件，调用对应的回调函数
     ReadEventCallback readCallback_;
