@@ -133,4 +133,5 @@ c++11特性的扩充
 
 2.3 使用c++17支持的if语句初始化，在if中直接初始化然后判断if条件，if (auto guard = tie_.lock(); guard) { … }
 
-
+### 3. Acceptor
+3.1 使用[[nodiscard]]保证返回值被使用，否则会报警告
