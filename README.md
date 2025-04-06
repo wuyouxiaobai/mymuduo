@@ -135,3 +135,9 @@ c++11特性的扩充
 
 ### 3. Acceptor
 3.1 使用[[nodiscard]]保证返回值被使用，否则会报警告
+
+
+### 4. EpollPoller
+4.1 用内联静态成员变量直接初始化inline static constexpr int kInitEventListSize = 16
+
+4.2 用c++17的if-init

@@ -3,6 +3,7 @@
 #include "Channel.h"
 #include <unistd.h>
 #include <cstring>
+#include <ranges>
 
 
 namespace WYXB {
@@ -101,18 +102,16 @@ void EpollPoller::removeChannel(Channel* channel)
 }
 
 // 填写活跃的连接
-void EpollPoller::fillActiveChannels(int numEvents, ChannelList* activeChannels) const
-{
-    for(int i = 0; i < numEvents; ++i)
-    {
-        Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
-        if(channel == nullptr)
+void EpollPoller::fillActiveChannels(int numEvents, ChannelList* activeChannels) const {
+    for (int i = 0; i < numEvents; ++i) {  
+        const auto& event = events_[i];     
+        if (auto* channel = static_cast<Channel*>(event.data.ptr); channel) {
+            channel->set_revents(event.events);
+            activeChannels->push_back(channel);
+        } else {
             LOG_ERROR("epoll_wait channel error");
-        channel->set_revents(events_[i].events);
-        activeChannels->push_back(channel);
+        }
     }
-
-
 }
 // 更新channel
 void EpollPoller::update(int operation, Channel* channel)

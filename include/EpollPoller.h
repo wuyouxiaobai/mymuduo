@@ -18,16 +18,16 @@ class EpollPoller : public Poller
 {
 public:
 
-    EpollPoller(EventLoop* loop);
+    explicit EpollPoller(EventLoop* loop);
     ~EpollPoller() override;
 
-    Timestamp poll(int timeout, ChannelList* activeChannels) override;
+    [[nodiscard]] Timestamp poll(int timeout, ChannelList* activeChannels) override;
     void updateChannel(Channel* channel) override;
     void removeChannel(Channel* channel) override;
 
 private:
 
-    static const int kInitEventListSize = 16;
+    inline static constexpr int kInitEventListSize = 16;
     // 填写活跃的连接
     void fillActiveChannels(int numEvents, ChannelList* activeChannels) const;
     // 更新channel
