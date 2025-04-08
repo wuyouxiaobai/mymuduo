@@ -36,7 +36,7 @@ public:
     void removeChannel(Channel* channel); // 移除channel
     bool hasChannel(Channel* channel) const; // 判断channel是否活跃
 
-    bool isInLoopThread() const { return threadId_ == CurrentThread::tid(); } // 判断当前线程是否是loop线程
+    [[nodiscard]] bool isInLoopThread() const { return threadId_ == CurrentThread::tid(); } // 判断当前线程是否是loop线程
 
 
 private:
@@ -59,6 +59,8 @@ private:
     std::atomic_bool callingPendinFunctors_;// 标识当前loop是否有需要执行的回调参数
     std::vector<Functor> pendingFunctors_; // 存放待执行的回调参数
     std::mutex mutex_; // 互斥锁
+
+
 };
 
 

@@ -1,5 +1,6 @@
 #include "EventLoop.h"
 #include <sys/eventfd.h>
+#include <optional>
 #include <unistd.h>
 #include <unistd.h>
 #include "Logger.h"
@@ -10,17 +11,18 @@ namespace WYXB
 {
 
 // 防止一个线程创建多个eventloop对象
-__thread EventLoop* t_loopInThisThread = nullptr;
+thread_local  EventLoop* t_loopInThisThread = nullptr;
 
 // 定义Poller io复用接口超时时间
-const int kPollTimeoutMs = 10000;
+constexpr  int kPollTimeoutMs = 10000;
 
-int createEventfd()
+std::optional<int> createEventfd()
 {   
     int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if(evtfd < 0)
     {
         LOG_FATAL("eventfd create failed:%d \n", errno);
+        return std::nullopt;
     }
     return evtfd;
 }
@@ -31,7 +33,7 @@ EventLoop::EventLoop()
       callingPendinFunctors_(false),
       threadId_(CurrentThread::tid()),
       poller_(Poller::newDefaultPoller(this)),
-      wakeupFd_(createEventfd()),
+      wakeupFd_(createEventfd().value()),
       wakeupChannel_(new Channel(this, wakeupFd_))
 {
     LOG_DEBUG("EventLoop created %p in thread %d", this, threadId_);
@@ -44,7 +46,7 @@ EventLoop::EventLoop()
         t_loopInThisThread = this;
     }
     // 设置wakeupfd事件类型及发生后回调函数
-    wakeupChannel_->setReadCallback(std::bind(&EventLoop::handleRead, this));
+    wakeupChannel_->setReadCallback([this] { std::invoke(&EventLoop::handleRead, this); });
     // 每个eventloop都监听wakeupchannel的EPOLLIN读事件
     wakeupChannel_->enableReading();
 }
@@ -83,7 +85,7 @@ void EventLoop::loop()
         for(Channel* channel : activeChannels_)
         {
             // Poller监听哪些channel事件发生了，然后上报给eventloop，通知channel处理相应事件
-            channel->handleEvent(pollReturnTime_);
+            std::invoke(&Channel::handleEvent, channel, pollReturnTime_);
         }
         /** 执行当前eventloop事件循环需要处理的所有回调函数
          *  将当前loop需要执行的回调函数放入待执行队列，被wakeup后，执行mainloop注册的函数
@@ -167,7 +169,7 @@ void EventLoop::doPendingFunctors() // 执行待执行的回调函数
     std::vector<Functor> functors;
     callingPendinFunctors_ = true;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::scoped_lock lock(mutex_);
         functors.swap(pendingFunctors_);
     }
     for(Functor& functor : functors)

@@ -141,3 +141,19 @@ c++11特性的扩充
 4.1 用内联静态成员变量直接初始化inline static constexpr int kInitEventListSize = 16
 
 4.2 用c++17的if-init
+
+
+### 5. EventLoop
+5.1 用 thread_local 代替 __thread，thread_local是c++11的标准，兼容性更强
+
+5.2 constexpr 代替 const，编译期就获得变量值
+
+5.3 用匿名函数 加 c++17 的 invoke（同一函数调用）代替 bind
+
+5.4 用 invoke 代替指针调用成员函数
+
+5.5 用 std::optional 完善返回值，wakeupFd_(createEventfd().value_or(-1))
+
+5.6 [[nodiscard]] 强烈建议调用者不要忽略函数的返回值
+
+5.7 scoped_lock 代替 lock_guard ，可以一次性对多个互斥量加锁，避免了死锁
