@@ -28,7 +28,7 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockf
       channel_(new Channel(loop, sockfd)),
       local_addr_(local_addr),
       peer_addr_(peer_addr),
-      highWaterMark_(64*1024*1024) // 64M
+      highWaterMark_(kDefaultHighWaterMark) // 64M
 {
     // 给channel设置回调函数，poller给channel通知感兴趣的事件发生了，channel会调用相应操作函数
     channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this, std::placeholders::_1));
@@ -110,29 +110,24 @@ void TcpConnection::handleError()
     int optval = 0;
     socklen_t optlen = sizeof optval;
     int err = 0;
-    if(::getsockopt(channel_->fd(), SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0)
-    {
-        err = errno;
-    }
-    else
-    {
-        err = optval;
-    }
+    int err = (::getsockopt(channel_->fd(), SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0) ? errno : optval;
     LOG_ERROR("TcpConnection::handleError name:%s - SO_ERROR %s\n", name_.c_str(), strerror(err));
 }
 
-void TcpConnection::send(const std::string& buf)
+void TcpConnection::send(std::string_view buf)
 {
     if(state_ == kConnected)
     {
         if(loop_->isInLoopThread())
         {
-            sendInLoop(buf.c_str(), buf.size());
+            sendInLoop(buf.data(), buf.size());
             
         }
         else
         {
-            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size()));
+            loop_->runInLoop([this, buf]() {
+                sendInLoop(buf.data(), buf.size());
+            });
         }
     }
 }
@@ -164,20 +159,12 @@ void TcpConnection::sendInLoop(const void* data, int len)
             if(remaining == 0 && writeCompleteCallback_)
             {
                 // 既然数据全部发送完毕，就不用给channel设置epollout事件了
-                loop_->queueInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
+                loop_->queueInLoop([this]() { writeCompleteCallback_(shared_from_this()); });
             }
         }
-        else
-        {
-            nwrote = 0;
-            if(errno != EWOULDBLOCK)
-            {
-                LOG_ERROR("TcpConnection::sendInLoop");
-                if(errno == EPIPE || errno == ECONNRESET)
-                {
-                    faultError = true;
-                }
-            }
+        else if (errno != EWOULDBLOCK) {
+            LOG_ERROR("TcpConnection::sendInLoop");
+            if (errno == EPIPE || errno == ECONNRESET) faultError = true;
         }
     }
     
@@ -190,9 +177,11 @@ void TcpConnection::sendInLoop(const void* data, int len)
         size_t oldLen = outputBuffer_.readableBytes();
         if(oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_)
         {
-            loop_->queueInLoop(std::bind(highWaterMarkCallback_, shared_from_this(), oldLen + remaining));
+            loop_->queueInLoop([this, total = oldLen + remaining]() {
+                highWaterMarkCallback_(shared_from_this(), total);
+            });
         }
-        outputBuffer_.append((char*)data + nwrote, remaining);
+        outputBuffer_.append(static_cast<const char*>(data) + nwrote, remaining);
         if(!channel_->isWriting())
         {
             channel_->enableWriting();
@@ -227,7 +216,7 @@ void TcpConnection::shutdown()
     if(state_ == kConnected)
     {
         setState(kDisconnecting);
-        loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+        loop_->runInLoop([this]() { shutdownInLoop(); });
     }
 
 }

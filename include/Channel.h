@@ -20,7 +20,7 @@ class Channel : noncopyable
 {
 public:
     using EventCallback = std::function<void()>;
-    using ReadEventCallback = std::function<void()>;
+    using ReadEventCallback = std::function<void(Timestamp)>;
     
     Channel(EventLoop* loop, int fd);
     ~Channel();
@@ -86,7 +86,9 @@ private:
     EventCallback writeCallback_;
     EventCallback closeCallback_;
     EventCallback errorCallback_;
-    
+
+
+
 };
 
 

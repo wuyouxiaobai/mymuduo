@@ -32,7 +32,7 @@ public:
 
     bool connected() const{ return state_ == kConnected; }
 
-    void send(const std::string& buf);
+    void send(std::string_view buf);
     void shutdown();
 
     void setConnectionCallback(const ConnectionCallback& cb) { connectionCallback_ = cb; }
@@ -83,6 +83,8 @@ private:
     Buffer inputBuffer_; // 输入缓冲区
     Buffer outputBuffer_; // 输出缓冲区
 
+
+    inline static constexpr size_t kDefaultHighWaterMark = 64 * 1024 * 1024;
 };
 
 
